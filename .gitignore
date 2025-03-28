@@ -1,0 +1,7 @@
+.vscode
+Telemetry/appsettings.*
+Telemetry/bin
+Telemetry/Migrations
+Telemetry/obj
+Telemetry/Properties
+Telemetry/Telemetry.db
