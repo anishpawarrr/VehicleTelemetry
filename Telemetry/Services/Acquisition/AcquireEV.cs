@@ -6,9 +6,18 @@ using Telemetry.Entities;
 
 namespace Telemetry.Services.Acquisition;
 
+/// <summary>
+/// Class for acquiring telemetry data for EV.
+/// This class implements the IAcquire interface and provides methods to acquire telemetry values,
+/// </summary>
 public class AcquireEV : IAcquire
 {
     private readonly DataBaseContext _dbContext;
+
+    /// <summary>
+    /// Constructor for AcquireEV class.
+    /// </summary>
+    /// <param name="dbContext">dbObject passed using D.I.</param>
     public AcquireEV(DataBaseContext dbContext)
     {
         _dbContext = dbContext;
@@ -151,6 +160,16 @@ public class AcquireEV : IAcquire
         };   
     }
 
+    /// <summary>
+    /// Calculates the battery percentage based on the current battery percentage, current, battery capacity, and timestamps.
+    /// This method is used to determine the remaining battery percentage after a certain time period.
+    /// </summary>
+    /// <param name="currentBatteryPercentage">Current battery percentage</param>
+    /// <param name="current">current (Amps)</param>
+    /// <param name="batteryCapacity">battery capacity (Ah)</param>
+    /// <param name="previousTimestamp"></param>
+    /// <param name="currentTimestamp"></param>
+    /// <returns>float : calculated battery percentage</returns>
     private float GetBatteryPercentage(float currentBatteryPercentage, int current, float batteryCapacity, double previousTimestamp, double currentTimestamp)
     {
         float timeDiff =  (float)(currentTimestamp - previousTimestamp)/3600.0f;
@@ -160,11 +179,27 @@ public class AcquireEV : IAcquire
         return batteryPercentage < 0 ? 0 : batteryPercentage;
     }
 
+    /// <summary>
+    /// Calculates the acceleration based on the previous and current speed and timestamps.
+    /// </summary>
+    /// <param name="previousSpeed">Previous speed of the vehicle</param>
+    /// <param name="currentSpeed">Current speed of the vehicle</param>
+    /// <param name="previousTimestamp">Previous timestamp</param>
+    /// <param name="currentTimestamp">Current timestamp</param>
+    /// <returns>double : calculated acceleration</returns>
     private double GetAcceleration(int previousSpeed, int currentSpeed, double previousTimestamp, double currentTimestamp)
     {
         return (currentSpeed - previousSpeed) / (currentTimestamp - previousTimestamp);
     }
 
+    /// <summary>
+    /// Calculates the distance traveled based on the previous speed, timestamps, and acceleration.
+    /// </summary>
+    /// <param name="previousSpeed">Previous speed of the vehicle</param>
+    /// <param name="previousTimestamp">Previous timestamp</param>
+    /// <param name="currentTimestamp">Current timestamp</param>
+    /// <param name="acceleration">Acceleration of the vehicle</param>
+    /// <returns>double : calculated distance</returns>
     private double GetDistance(int previousSpeed, double previousTimestamp, double currentTimestamp, double acceleration)
     {
         double timeDiff = currentTimestamp - previousTimestamp;
